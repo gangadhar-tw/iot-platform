@@ -1,8 +1,8 @@
 package com.assignment.IoT.platform.repository;
 
 import com.assignment.IoT.platform.model.Sensor;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface SensorRepository extends JpaRepository<Sensor, Integer> {
+public interface SensorRepository extends MongoRepository<Sensor, String> {
 
 }
