@@ -1,50 +1,52 @@
 package com.assignment.IoT.platform.controller;
 
 import com.assignment.IoT.platform.model.Sensor;
-import com.assignment.IoT.platform.repository.SensorRepository;
+import com.assignment.IoT.platform.service.SensorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/iot/sensors")
 public class SensorController {
 
-    private final SensorRepository sensorRepository;
+    private final SensorService sensorService;
 
     @Autowired
-    public SensorController(SensorRepository sensorRepository) {
-        this.sensorRepository = sensorRepository;
+    public SensorController(SensorService sensorService) {
+        this.sensorService = sensorService;
     }
 
     @GetMapping
-    public List<Sensor> getAllSensors() {
-        return sensorRepository.findAll();
+    public ResponseEntity<List<Sensor>> getAllSensors() {
+        return ResponseEntity.ok(sensorService.getAllSensors());
     }
 
     @GetMapping("/{id}")
-    public Sensor getSensorById(@PathVariable String id) {
-        return sensorRepository.findById(id).orElse(null);
+    public ResponseEntity<Sensor> getSensorById(@PathVariable String id) {
+        return sensorService.getSensorById(id)
+                .map(sensor -> ResponseEntity.ok(sensor))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public String createSensor(@RequestBody Sensor sensor) {
-        sensorRepository.save(sensor);
-        return "sensor created";
+    public ResponseEntity<Sensor> createSensor(@RequestBody Sensor sensor) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(sensorService.createSensor(sensor));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteSensor(@PathVariable String id) {
-        sensorRepository.deleteById(id);
-        return "sensor with id : " + id + " deleted successfully";
+    public ResponseEntity<Void> deleteSensor(@PathVariable String id) {
+        boolean isDeleted = sensorService.deleteSensor(id);
+        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
-    public String updateSensor(@PathVariable String id, @RequestBody Sensor sensor) {
-        sensorRepository.save(sensor);
-        return "sensor with id: " + id + " updated";
+    public ResponseEntity<Sensor> updateSensor(@PathVariable String id, @RequestBody Sensor updatedSensor) {
+        return sensorService.updateSensor(id, updatedSensor)
+                .map(sensor -> ResponseEntity.ok(sensor))
+                .orElse(ResponseEntity.notFound().build());
     }
-
 }
