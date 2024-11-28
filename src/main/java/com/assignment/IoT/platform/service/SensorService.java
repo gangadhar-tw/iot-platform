@@ -5,6 +5,7 @@ import com.assignment.IoT.platform.repository.SensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,8 @@ public class SensorService {
     }
 
     public Sensor createSensor(Sensor sensor) {
+        sensor.setCreatedAt(LocalDateTime.now());
+        sensor.setUpdatedAt(LocalDateTime.now());
         return sensorRepository.save(sensor);
     }
 
@@ -42,6 +45,7 @@ public class SensorService {
     public Optional<Sensor> updateSensor(String id, Sensor updatedSensor) {
         return sensorRepository.findById(id)
                 .map(existingSensor -> {
+                    existingSensor.setUpdatedAt(LocalDateTime.now());
                     existingSensor.setName(updatedSensor.getName() != null ? updatedSensor.getName() : existingSensor.getName());
                     existingSensor.setTemperature(updatedSensor.getTemperature() != null ? updatedSensor.getTemperature() : existingSensor.getTemperature());
                     existingSensor.setLongitude(updatedSensor.getLongitude() != null ? updatedSensor.getLongitude() : existingSensor.getLongitude());
