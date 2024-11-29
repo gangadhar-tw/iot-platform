@@ -32,6 +32,7 @@ class SensorServiceTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
+        verify(sensorRepository, times(1)).findAll();
     }
 
     @Test
@@ -45,6 +46,7 @@ class SensorServiceTest {
         assertEquals(sensors.size(), result.size());
         assertTrue(result.containsAll(sensors));
         assertEquals("Sensor 1", result.get(0).getName());
+        verify(sensorRepository, times(1)).findAll();
     }
 
     @Test
@@ -56,6 +58,7 @@ class SensorServiceTest {
 
         assertTrue(resultSensorWithIdOne.isPresent());
         assertEquals("Sensor 1", resultSensorWithIdOne.get().getName());
+        verify(sensorRepository, times(1)).findById("1");
     }
 
     @Test
@@ -65,6 +68,7 @@ class SensorServiceTest {
         Optional<Sensor> result = sensorService.getSensorById("99");
 
         assertTrue(result.isEmpty());
+        verify(sensorRepository, times(1)).findById("99");
     }
 
     @Test
