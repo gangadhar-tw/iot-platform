@@ -1,12 +1,14 @@
-package com.assignment.IoT.platform.model.response;
+package com.assignment.IoT.platform.dto.response;
 
-import lombok.Builder;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Set;
 
 @Builder
 @ToString
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateUserResponse {
     private String id;
     private String username;

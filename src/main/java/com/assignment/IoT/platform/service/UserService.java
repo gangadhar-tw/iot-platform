@@ -2,17 +2,17 @@ package com.assignment.IoT.platform.service;
 
 import com.assignment.IoT.platform.Exceptions.UserNameAlreadyExistException;
 import com.assignment.IoT.platform.Exceptions.UserNameNotFoundException;
+import com.assignment.IoT.platform.auth.JwtUtil;
 import com.assignment.IoT.platform.model.User;
-import com.assignment.IoT.platform.model.request.CreateUserRequest;
-import com.assignment.IoT.platform.model.request.LoginRequest;
-import com.assignment.IoT.platform.model.response.CreateUserResponse;
+import com.assignment.IoT.platform.dto.request.CreateUserRequest;
+import com.assignment.IoT.platform.dto.request.LoginRequest;
+import com.assignment.IoT.platform.dto.response.CreateUserResponse;
 import com.assignment.IoT.platform.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -23,9 +23,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final JwtUtil jwtService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -39,7 +39,6 @@ public class UserService {
 
         User user = convertUserRequestToUser(request);
         User savedUser = userRepository.save(user);
-//        System.out.println(savedUser);
         return CreateUserResponse.builder()
                 .id(savedUser.getId())
                 .username(savedUser.getUsername())

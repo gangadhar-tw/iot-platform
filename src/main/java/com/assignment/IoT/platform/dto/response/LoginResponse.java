@@ -1,4 +1,4 @@
-package com.assignment.IoT.platform.model.response;
+package com.assignment.IoT.platform.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

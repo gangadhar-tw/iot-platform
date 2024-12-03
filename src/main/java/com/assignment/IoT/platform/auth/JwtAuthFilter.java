@@ -1,7 +1,5 @@
-package com.assignment.IoT.platform.config;
+package com.assignment.IoT.platform.auth;
 
-import com.assignment.IoT.platform.helpers.CustomUserDetailsService;
-import com.assignment.IoT.platform.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,17 +16,16 @@ import java.io.IOException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final JwtUtil jwtService;
     private final CustomUserDetailsService customUserDetailsService;
 
-    public JwtAuthFilter(JwtService jwtService, CustomUserDetailsService customUserDetailsService) {
+    public JwtAuthFilter(JwtUtil jwtService, CustomUserDetailsService customUserDetailsService) {
         this.jwtService = jwtService;
         this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        System.out.println("JwtAuthFilter");
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;

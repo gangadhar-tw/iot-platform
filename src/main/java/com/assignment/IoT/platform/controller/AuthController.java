@@ -1,11 +1,12 @@
 package com.assignment.IoT.platform.controller;
 
-import com.assignment.IoT.platform.model.request.CreateUserRequest;
-import com.assignment.IoT.platform.model.request.LoginRequest;
-import com.assignment.IoT.platform.model.response.CreateUserResponse;
-import com.assignment.IoT.platform.model.response.LoginResponse;
+import com.assignment.IoT.platform.dto.request.CreateUserRequest;
+import com.assignment.IoT.platform.dto.request.LoginRequest;
+import com.assignment.IoT.platform.dto.response.CreateUserResponse;
+import com.assignment.IoT.platform.dto.response.LoginResponse;
 import com.assignment.IoT.platform.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +25,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<CreateUserResponse> registerUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
         CreateUserResponse registeredUser = userService.save(createUserRequest);
-//        System.out.println(registeredUser);
-        return ResponseEntity.ok(registeredUser);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

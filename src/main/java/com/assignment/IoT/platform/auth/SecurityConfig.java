@@ -1,6 +1,5 @@
-package com.assignment.IoT.platform.config;
+package com.assignment.IoT.platform.auth;
 
-import com.assignment.IoT.platform.helpers.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

@@ -1,4 +1,4 @@
-package com.assignment.IoT.platform.helpers;
+package com.assignment.IoT.platform.auth;
 
 import com.assignment.IoT.platform.model.User;
 import org.springframework.security.core.GrantedAuthority;
