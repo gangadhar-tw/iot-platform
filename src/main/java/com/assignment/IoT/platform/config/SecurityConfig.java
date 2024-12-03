@@ -36,6 +36,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/iot/auth/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/iot/sensors/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/iot/sensors/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/iot/sensors").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

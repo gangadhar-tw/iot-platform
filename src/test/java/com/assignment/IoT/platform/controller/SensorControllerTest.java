@@ -2,12 +2,18 @@ package com.assignment.IoT.platform.controller;
 
 import com.assignment.IoT.platform.model.Sensor;
 import com.assignment.IoT.platform.service.SensorService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(SensorController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class SensorControllerTest {
 
     @Autowired
@@ -29,6 +36,17 @@ class SensorControllerTest {
 
     @MockBean
     private SensorService sensorService;
+
+    @BeforeEach
+    public void setUp() {
+        UserDetails userDetails = User.withUsername("testuser")
+                .password("password")
+                .roles("USER")
+                .build();
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 
     @Test
     void shouldReturnListOfSensorsWhenGetAllSensorsIsCalled() throws Exception {
@@ -64,6 +82,7 @@ class SensorControllerTest {
         Sensor sensor = getSensor();
         when(sensorService.createSensor(sensor)).thenReturn(sensor);
 
+        authenticateAdmin();
         mockMvc.perform(post("/iot/sensors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(sensor)))
@@ -77,6 +96,7 @@ class SensorControllerTest {
     void shouldReturnBadRequestWhenCreatingSensorWithInvalidData() throws Exception {
         Sensor sensor = new Sensor();
 
+        authenticateAdmin();
         mockMvc.perform(post("/iot/sensors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(sensor)))
@@ -87,6 +107,7 @@ class SensorControllerTest {
     void shouldDeleteSensorWhenValidIdIsProvided() throws Exception {
         when(sensorService.deleteSensor("1")).thenReturn(true);
 
+        authenticateAdmin();
         mockMvc.perform(delete("/iot/sensors/{id}", "1"))
                 .andExpect(status().isNoContent());
     }
@@ -95,6 +116,7 @@ class SensorControllerTest {
     void shouldReturnNotFoundWhenDeletingSensorWithInvalidId() throws Exception {
         when(sensorService.deleteSensor("99")).thenReturn(false);
 
+        authenticateAdmin();
         mockMvc.perform(delete("/iot/sensors/{id}", "99"))
                 .andExpect(status().isNotFound());
 
@@ -105,6 +127,7 @@ class SensorControllerTest {
         Sensor updatedSensor = Sensor.builder().name("updated sensor").build();
         when(sensorService.updateSensor("1", updatedSensor)).thenReturn(Optional.of(updatedSensor));
 
+        authenticateAdmin();
         mockMvc.perform(put("/iot/sensors/{id}", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(updatedSensor)))
@@ -118,6 +141,7 @@ class SensorControllerTest {
         Sensor updatedSensor = Sensor.builder().name("updated sensor").build();
         when(sensorService.updateSensor("1", updatedSensor)).thenReturn(Optional.of(updatedSensor));
 
+        authenticateAdmin();
         mockMvc.perform(put("/iot/sensors/{id}", "99")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(updatedSensor)))
@@ -131,5 +155,15 @@ class SensorControllerTest {
 
     private List<Sensor> getSensors() {
         return Arrays.asList(getSensor(), Sensor.builder().id("2").name("Sensor 2").temperature(18.5).latitude(-4.1234).longitude(56.8344).build());
+    }
+
+    private void authenticateAdmin() {
+        UserDetails userDetails = User.withUsername("testuser")
+                .password("password")
+                .roles("ADMIN")
+                .build();
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
