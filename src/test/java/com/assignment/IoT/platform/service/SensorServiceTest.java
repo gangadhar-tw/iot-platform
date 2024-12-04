@@ -120,6 +120,20 @@ class SensorServiceTest {
     }
 
     @Test
+    void shouldReturnExistingSensorWhenUpdateSensorIsCalledWithExistingSensorIdButWithAllNullValues() {
+        Sensor existingSensor = getSensor();
+        Sensor updatedSensor = new Sensor();
+        when(sensorRepository.findById("1")).thenReturn(Optional.of(existingSensor));
+        when(sensorRepository.save(any(Sensor.class))).thenReturn(existingSensor);
+
+        Optional<Sensor> result = sensorService.updateSensor("1", updatedSensor);
+
+        assertNotNull(result);
+        assertEquals(existingSensor.getName(), result.get().getName());
+        verify(sensorRepository, times(1)).save(existingSensor);
+    }
+
+    @Test
     void shouldReturnEmptyWhenUpdateSensorIsCalledWithNonExistingSensorId() {
         Sensor updatedSensor = getSensor();
         when(sensorRepository.findById("99")).thenReturn(Optional.empty());
