@@ -1,5 +1,7 @@
 package com.assignment.IoT.platform.controller;
 
+import com.assignment.IoT.platform.Exceptions.InvalidCredentialsException;
+import com.assignment.IoT.platform.Exceptions.UserNameAlreadyExistException;
 import com.assignment.IoT.platform.dto.request.CreateUserRequest;
 import com.assignment.IoT.platform.dto.request.LoginRequest;
 import com.assignment.IoT.platform.dto.response.CreateUserResponse;
@@ -24,13 +26,21 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<CreateUserResponse> registerUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
-        CreateUserResponse registeredUser = userService.save(createUserRequest);
-        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+        try {
+            CreateUserResponse registeredUser = userService.save(createUserRequest);
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+        } catch (UserNameAlreadyExistException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
-        String token = userService.login(loginRequest);
-        return ResponseEntity.ok(LoginResponse.builder().token(token).username(loginRequest.getUsername()).build());
+        try {
+            String token = userService.login(loginRequest);
+            return ResponseEntity.ok(LoginResponse.builder().token(token).username(loginRequest.getUsername()).build());
+        } catch (InvalidCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }
