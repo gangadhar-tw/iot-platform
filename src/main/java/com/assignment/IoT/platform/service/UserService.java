@@ -1,7 +1,7 @@
 package com.assignment.IoT.platform.service;
 
 import com.assignment.IoT.platform.Exceptions.UserNameAlreadyExistException;
-import com.assignment.IoT.platform.Exceptions.UserNameNotFoundException;
+import com.assignment.IoT.platform.Exceptions.InvalidCredentialsException;
 import com.assignment.IoT.platform.auth.JwtUtil;
 import com.assignment.IoT.platform.model.User;
 import com.assignment.IoT.platform.dto.request.CreateUserRequest;
@@ -9,8 +9,10 @@ import com.assignment.IoT.platform.dto.request.LoginRequest;
 import com.assignment.IoT.platform.dto.response.CreateUserResponse;
 import com.assignment.IoT.platform.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -51,11 +53,11 @@ public class UserService {
     public String login(LoginRequest loginRequest) {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        if (authentication.isAuthenticated()) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtService.generateToken(username);
-        } else {
-            throw new UserNameNotFoundException();
+        } catch (BadCredentialsException e) {
+            throw new InvalidCredentialsException();
         }
     }
 
