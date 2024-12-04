@@ -154,6 +154,8 @@
                             <configuration>
                                 <excludes>
                                     <exclude>com/assignment/IoT/platform/IoTPlatformApplication.class</exclude>
+                                    <exclude>**/model/**</exclude>
+                                    <exclude>**/dto/**</exclude>
                                 </excludes>
                             </configuration>
                         </execution>
