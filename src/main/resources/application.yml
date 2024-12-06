@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: IoT-platform
+  data:
+    mongodb:
+      uri: mongodb://gangadhar:password@localhost:27017/iot-platform?authSource=admin
+
+mongock:
+  migration-scan-package: com.assignment.IoT.platform.migrations
+
