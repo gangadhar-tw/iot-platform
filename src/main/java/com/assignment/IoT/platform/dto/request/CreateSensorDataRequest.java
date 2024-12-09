@@ -1,21 +1,18 @@
-package com.assignment.IoT.platform.model;
+package com.assignment.IoT.platform.dto.request;
 
 import jakarta.validation.constraints.*;
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "sensorData")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class SensorData {
-
-    @Id
-    private String id;
+public class CreateSensorDataRequest {
 
     @NotBlank(message = "Sensor Id is must for sensorData")
     private String sensorId;
@@ -41,4 +38,5 @@ public class SensorData {
     private Double batteryPercentage;
 
     private LocalDateTime timestamp;
+
 }
