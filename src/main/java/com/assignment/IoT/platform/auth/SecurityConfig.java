@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/iot/auth/**").permitAll()
+                        .requestMatchers("/iot/producer/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/iot/sensors/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/iot/sensors/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/iot/sensors").hasRole("ADMIN")

@@ -4,7 +4,19 @@ spring:
   data:
     mongodb:
       uri: mongodb://gangadhar:password@localhost:27017/iot-platform?authSource=admin
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: sensor-data-consumer-group
+      auto-offset-reset: earliest
+
 
 mongock:
   migration-scan-package: com.assignment.IoT.platform.migrations
+
 
