@@ -1,6 +1,7 @@
 package com.assignment.IoT.platform.configurations;
 
 import com.assignment.IoT.platform.dto.request.CreateSensorDataRequest;
+import com.assignment.IoT.platform.model.SensorData;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,12 +35,12 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, CreateSensorDataRequest> producerFactory() {
+    public ProducerFactory<String, SensorData> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, CreateSensorDataRequest> kafkaTemplate() {
+    public KafkaTemplate<String, SensorData> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }
