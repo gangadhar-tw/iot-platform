@@ -20,6 +20,11 @@ public class SensorDataController {
 
     @PostMapping("/message")
     public ResponseEntity<SensorData> createAndProduceSensorData(@Valid @RequestBody CreateSensorDataRequest createSensorDataRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(sensorDataService.createAndProduceSensorData(createSensorDataRequest));
+        try {
+            SensorData sensorData = sensorDataService.createAndProduceSensorData(createSensorDataRequest);
+            return new ResponseEntity<>(sensorData, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 }
