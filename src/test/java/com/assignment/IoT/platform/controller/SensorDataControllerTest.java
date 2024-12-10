@@ -48,6 +48,7 @@ class SensorDataControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isCreated());
+
         verify(sensorDataService, times(1)).createAndProduceSensorData(request);
     }
 
@@ -71,6 +72,8 @@ class SensorDataControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(getCreateSensorDataRequest())))
                 .andExpect(status().isNotFound());
+
+        verify(sensorDataService, times(1)).createAndProduceSensorData(any(CreateSensorDataRequest.class));
     }
 
     private SensorData getSensorData(String id) {
