@@ -3,14 +3,12 @@ spring:
     name: IoT-platform
   data:
     mongodb:
-      uri: mongodb://gangadhar:password@localhost:27017/iot-platform?authSource=admin
+      uri: mongodb://gangadhar:password@mongodb:27017/iot-platform?authSource=admin
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 mongock:
   migration-scan-package: com.assignment.IoT.platform.migrations
-
-

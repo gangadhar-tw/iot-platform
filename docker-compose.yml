@@ -29,7 +29,7 @@ services:
     environment:
       KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       ALLOW_PLAINTEXT_LISTENER: "yes"
       KAFKA_CFG_NUM_PARTITIONS: 1
       KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: 1
@@ -42,6 +42,34 @@ services:
       - zookeeper
     networks:
       - kafka-net
+  producer:
+    image: sensor-data-producer-app
+    container_name: sensor-data-producer-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker  # Make sure the profile is set to 'docker'
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      MONGO_URI: mongodb://gangadhar:password@mongodb-iot:27017/iot-platform?authSource=admin
+    depends_on:
+      - kafka
+      - mongodb
+    networks:
+      - kafka-net
+    ports:
+      - "8081:8080"
+  consumer:
+    image: sensor-data-consumer-app # Name of the consumer image
+    container_name: sensor-data-consumer-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker  # Make sure the profile is set to 'docker'
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      MONGO_URI: mongodb://gangadhar:password@mongodb-iot:27017/iot-platform?authSource=admin
+    depends_on:
+      - kafka
+      - mongodb
+    networks:
+      - kafka-net
+    ports:
+      - "8082:8080"  # Or any other port your application runs on
 
 networks:
   kafka-net:
